@@ -1,6 +1,7 @@
 *.xml
 *.log
 *.json
+*.r8
 r8diumDb.csv
 r8dium.cfg
 venv/

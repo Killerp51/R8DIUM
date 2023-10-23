@@ -19,6 +19,7 @@ from discord.ext import commands, tasks   # noqa
 import asyncio    # noqa
 import dbAccess
 import msgHandler
+import r8diumInclude
 from r8diumInclude import TOKEN, BAN_SCAN_TIME, SOFTWARE_VERSION, CH_ADMIN, CH_LOG, R8SERVER_ADDR, R8SERVER_PORT
 
 
@@ -243,5 +244,18 @@ def run_discord_bot(ldb):
             await log_channel.send(log_message(interaction))
         response = f'Run 8 server address: *{R8SERVER_ADDR}*\nRun 8 server port: *{R8SERVER_PORT}*'
         await interaction.response.send_message(response, ephemeral=True)  # noqa
+
+    @client.tree.command(name='send_file',
+                         description=f'Test file send')
+    @app_commands.describe(fname='The name of the file to send')
+    async def send_file(interaction: discord.Interaction, fname: str):
+        if fname == r8diumInclude.UF1_NAME:
+            sname = r8diumInclude.UF1_PATH
+        elif fname == r8diumInclude.UF2_NAME:
+            sname = r8diumInclude.UF2_PATH
+        else:
+            return
+
+        await interaction.response.send_message(file=discord.File(sname), ephemeral=True)  # noqa
 
     client.run(TOKEN)

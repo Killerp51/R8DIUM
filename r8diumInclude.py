@@ -61,6 +61,10 @@ try:
 
     # Run 8 security configuration xml filename
     SECURITY_FILE = config['run8']['security_file']
+    UF1_NAME = config['run8']['upload_1_name']
+    UF1_PATH = config['run8']['upload_1_pathname']
+    UF2_NAME = config['run8']['upload_2_name']
+    UF2_PATH = config['run8']['upload_2_pathname']
 
 except KeyError as e:
     print(f'\nr8dium ({__name__}.py): FATAL exception, unable to find [{e}] in configuration file')
