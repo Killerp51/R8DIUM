@@ -25,7 +25,8 @@ import psutil
 import r8diumInclude
 from r8diumInclude import (TOKEN, BAN_SCAN_TIME, SOFTWARE_VERSION, CH_ADMIN, CH_LOG, R8SERVER_ADDR, R8SERVER_PORT,
                            R8SERVER_NAME, R8SERVER_LOG, R8SERVER_PATH, DB_FILENAME, LOG_SCAN_TIME, INACT_DAYS,
-                           EXP_SCAN_TIME, UID_PURGE_TIME, BOT_STATUS, DISCORD_ROLE)
+                           EXP_SCAN_TIME, UID_PURGE_TIME, BOT_STATUS, DISCORD_ROLE, 
+                           BOT_ACTIVITY_ENABLED, WELCOME_ENABLED, JOIN_ROLE_ENABLED)
 import subprocess
 
 discord_char_limit = 1900
@@ -54,7 +55,7 @@ def run_discord_bot(ldb):
     async def on_ready():
         print(f'Discord bot [{client.user}] is starting')
         # Discord bot activity status
-        if BOT_STATUS:
+        if BOT_ACTIVITY_ENABLED != 'false':
             await client.change_presence(activity=discord.Game(BOT_STATUS))
         # Populate the dict with current host file modification timestamps
         for filename in r8diumInclude.SECURITY_FILE:

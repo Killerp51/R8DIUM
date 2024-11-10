@@ -52,6 +52,11 @@ try:
     # Discord bot unique token
     TOKEN = config['discord']['bot_token']
 
+    # Settings
+    BOT_ACTIVITY_ENABLED = config.getboolean('settings', 'bot_activity_enabled', fallback= True )
+    JOIN_ROLE_ENABLED = config.getboolean('settings', 'join_role_enabled', fallback= False )
+    WELCOME_ENABLED = config.getboolean('settings', 'welcome_enabled', fallback= False )
+
     # Discord bot status
     BOT_STATUS = config['discord']['bot_status']
 
