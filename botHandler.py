@@ -22,10 +22,11 @@ import dbAccess
 import msgHandler
 import pathlib
 import psutil
+import random
 import r8diumInclude
 from r8diumInclude import (TOKEN, BAN_SCAN_TIME, SOFTWARE_VERSION, CH_ADMIN, CH_LOG, R8SERVER_ADDR, R8SERVER_PORT,
                            R8SERVER_NAME, R8SERVER_LOG, R8SERVER_PATH, DB_FILENAME, LOG_SCAN_TIME, INACT_DAYS,
-                           EXP_SCAN_TIME, UID_PURGE_TIME, BOT_STATUS, DISCORD_ROLE, 
+                           EXP_SCAN_TIME, UID_PURGE_TIME, BOT_STATUS, DISCORD_ROLE, CH_WELCOME, WELCOME_MESSAGES,
                            BOT_ACTIVITY_ENABLED, WELCOME_ENABLED, JOIN_ROLE_ENABLED)
 import subprocess
 
@@ -44,7 +45,6 @@ def log_message(interaction) -> str:
     msgHandler.write_log_file(log_msg)  # Write the same message to our local log file
     return log_msg
 
-
 def run_discord_bot(ldb):
     from discord import app_commands
     from discord.ext import commands
@@ -55,7 +55,7 @@ def run_discord_bot(ldb):
     async def on_ready():
         print(f'Discord bot [{client.user}] is starting')
         # Discord bot activity status
-        if BOT_ACTIVITY_ENABLED != 'false':
+        if BOT_ACTIVITY_ENABLED:
             await client.change_presence(activity=discord.Game(BOT_STATUS))
         # Populate the dict with current host file modification timestamps
         for filename in r8diumInclude.SECURITY_FILE:
@@ -86,16 +86,25 @@ def run_discord_bot(ldb):
             clean_uids.start(ldb)
         dbAccess.send_statistics(ldb)
 
-
-    #Assign Discord Role when user joins
+    # Send random welcome message and assign Discord role when user joins
     @client.event
     async def on_member_join(member):
+
+        # Welcome Message
+        if WELCOME_ENABLED:
+            channel_id = discord.utils.get(client.get_all_channels(), name=CH_WELCOME).id
+            channel = client.get_channel(channel_id)
+            if channel:
+                # select a random message and send it
+                message = random.choice(WELCOME_MESSAGES).format(member=member.mention)
+                await channel.send(message)
+
+        # Role Assignment
         role = discord.utils.get(member.guild.roles, name=DISCORD_ROLE)
 
-        if role is not None:
+        if role is not None and JOIN_ROLE_ENABLED:
             await member.add_roles(role)
             print(f"Assigned role '{role.name}' to {member.name}.")
-
 
     @client.event
     async def on_member_remove(member):
@@ -109,8 +118,6 @@ def run_discord_bot(ldb):
             msgHandler.write_log_file(msg)
             await channel.send(msg)
             await admin_channel.send(msg)
-
-
 
     @tasks.loop(seconds=int(LOG_SCAN_TIME))
     async def scan_logins(ldb):

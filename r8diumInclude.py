@@ -66,6 +66,9 @@ try:
     # Discord channels
     CH_ADMIN = config['discord']['ch_admin']
     CH_LOG = config['discord']['ch_log']
+    CH_WELCOME = config['messages']['ch_welcome']
+
+    WELCOME_MESSAGES = [msg.strip() for msg in config.get('messages', 'welcome_messages').splitlines() if msg.strip()]
 
     BAN_SCAN_TIME = config['discord']['ban_scan_time']
     LOG_SCAN_TIME = config['discord']['log_scan_time']
